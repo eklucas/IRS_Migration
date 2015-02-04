@@ -57,4 +57,4 @@ target/
 # Added by JG
 .DS_Store
 old/*
-downloads/*
+downloads/*.csv
