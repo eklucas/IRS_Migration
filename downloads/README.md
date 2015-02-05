@@ -1,1 +1,0 @@
-This is just a placeholder file, necessary to maintain this folder which will hold the downloaded data.
