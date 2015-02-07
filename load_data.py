@@ -52,18 +52,18 @@ def load_file(csv_file, db_engine):
 	dialect = sniffer.sniff_dialect(csv_file.read())
 
 	copy_from_sql = '''COPY {table_name} 
-						FROM '{file_w_path}'
-						DELIMITER '{delimiter}'
-						QUOTE '{quote_character}'
-						ENCODING 'UTF8'
-						CSV
-						HEADER;'''.format(
-								  table_name = csv_file.name.lstrip('data/').rstrip('.csv')
-								, file_w_path = os.getcwd() + '/' + csv_file.name
-								, delimiter = dialect.delimiter
-								, quote_character = dialect.quotechar
-								# , escape_character = '' if dialect.escapechar is None else dialect.escapechar 
-							)
+					FROM '{file_w_path}'
+					DELIMITER '{delimiter}'
+					QUOTE '{quote_character}'
+					ENCODING 'UTF8'
+					CSV
+					HEADER;'''.format(
+							  table_name = csv_file.name.lstrip('data/').rstrip('.csv')
+							, file_w_path = os.getcwd() + '/' + csv_file.name
+							, delimiter = dialect.delimiter
+							, quote_character = dialect.quotechar
+							# , escape_character = '' if dialect.escapechar is None else dialect.escapechar 
+						)
 
 	conn = db_engine.connect() 
 
