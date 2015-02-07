@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime, timedelta
 import os
 import requests
 from bs4 import BeautifulSoup
 import re
-
 from sys import argv
 from getpass import getpass
-import psycopg2
-
-from csvkit import table, sql
-from table import Table
-
+from csvkit import table, sql, sniffer
+from csvkit.table import Table
 import codecs
+
+start_time = datetime.now()
+print 'Started at ' + str(start_time)
 
 
 def get_files(soup, url_scheme, url_pattern):
+	# Pass soup object containing links, plus url scheme of site and regex pattern for url links
+	# Searches for file links, downloads files and returns a list of file names
 
 	files = []
 
@@ -42,6 +44,39 @@ def get_files(soup, url_scheme, url_pattern):
 		files.append(file_name)
 
 	return files
+
+
+def load_file(csv_file, db_engine):
+	# Pass file object and SQLAlchemy db engine, builds and runs a COPY FROM statement
+
+	dialect = sniffer.sniff_dialect(csv_file.read())
+
+	copy_from_sql = '''COPY {table_name} 
+						FROM '{file_w_path}'
+						DELIMITER '{delimiter}'
+						QUOTE '{quote_character}'
+						ENCODING 'UTF8'
+						CSV
+						HEADER;'''.format(
+								  table_name = csv_file.name.lstrip('data/').rstrip('.csv')
+								, file_w_path = os.getcwd() + '/' + csv_file.name
+								, delimiter = dialect.delimiter
+								, quote_character = dialect.quotechar
+								# , escape_character = '' if dialect.escapechar is None else dialect.escapechar 
+							)
+
+	conn = db_engine.connect() 
+
+	t = conn.begin()
+
+	try:
+		conn.execute(copy_from_sql)
+		t.commit()
+	except:
+		t.rollback()
+
+	conn.close()
+
 
 
 url_scheme = 'http://www.irs.gov/'
@@ -87,13 +122,22 @@ engine = sql.create_engine('postgresql+psycopg2://{0}:{1}@localhost/{2}'.format(
 
 for f in in_files:
 
-	print '   Making {}...'.format(f)
+	print '   Opening {} ({})...'.format(f, datetime.now() - start_time)
 
-	the_file = codecs.open('data/{}'.format(f), 'rU')
+	from_file = Table.from_csv(codecs.open('data/{}'.format(f), 'rU'), name = f.rstrip('.csv'), encoding = 'utf-8') # Here be some overhead
 
-	from_file = Table.from_csv(the_file, name = f, encoding = 'utf-8')
+	print '   Making table object ({})...'.format(datetime.now() - start_time)
 
 	sql_table = sql.make_table(from_file)
 
+	print '   Creating SQL table ({})...'.format(datetime.now() - start_time)
+
 	sql_table.create(engine, checkfirst=True)
 
+	print '   Loading {} ({})...'.format(f, datetime.now() - start_time)
+
+	load_file(codecs.open('data/{}'.format(f), 'rU'), engine)
+
+	print '-----------------'
+
+print 'fin.'
