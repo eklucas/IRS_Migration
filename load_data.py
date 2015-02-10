@@ -61,7 +61,8 @@ def load_file(file_name, db_engine):
 
 	dialect = sniffer.sniff_dialect(f.read())
 
-	f = codecs.open('data/{}'.format(file_name), 'rU') # think I have to do this twice...
+	# Return to top of file
+	f.seek(0)
 
 	print '   Making csv Table object ({})...'.format(datetime.now() - start_time)
 
