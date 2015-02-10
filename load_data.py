@@ -89,7 +89,7 @@ def load_file(file_name, db_engine):
 							, file_w_path = os.getcwd() + '/data/' + file_name
 							, delimiter = dialect.delimiter
 							, quote_character = dialect.quotechar
-							# , escape_character = '' if dialect.escapechar is None else dialect.escapechar 
+							, escape_character = '' if dialect.escapechar is None else dialect.escapechar 
 						)
 
 	conn = db_engine.connect() 
