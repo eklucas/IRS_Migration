@@ -20,7 +20,8 @@ If you forget to pass the database parameters when you initialize the script, yo
 A little more about how load_data.py works:
 
 1.	[Request and parse](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L117-L119) the page with links to [state-level migration](http://www.irs.gov/uac/SOI-Tax-Stats-State-to-State-Migration-Database-Files) files.
-https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L121-L122) over links files found via [get_files()](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L18-L46). This function [checks](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L31-L33) to see if the given file is already in the data directory. If not, then [download](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L35-L43) the file. 
+
+2. [Iterate](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L121-L122) over links files found via [get_files()](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L18-L46). This function [checks](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L31-L33) to see if the given file is already in the data directory. If not, then [download](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L35-L43) the file. 
 	
 	Note that we [specify the original encoding](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L42) for the source files when writing their contents to local copies. Ultimately, we want this data in UTF-8, so we also specify that encoding when [opening](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L40) the local file, [reading](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L127) from that local copy and [loading](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L58) into the database.
 
@@ -36,4 +37,4 @@ https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L121-L122) ov
 	*	Call [csvkit's make_table() method](https://github.com/onyxfish/csvkit/blob/master/csvkit/sql.py#L77-L89) to create a SQLAlchemy Table object.
 	*	Call the SQLAlchemy Table object's [create() method](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L131) which generates and runs the CREATE TABLE... statement and runs it in the database.
 	*	Generate the [COPY FROM](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L81-L93) statement, [set up a connection](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L95) and a [transaction](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L97), [execute](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L99-L101) the SQL ([or print](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L102-L105) the failed statement), then [close](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py#L107) the connection.
-	
+
