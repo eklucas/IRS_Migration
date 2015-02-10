@@ -129,7 +129,7 @@ for i in get_files(soup, url_scheme, re.compile(r'/file_source/pub/irs-soi/count
 	in_files.append(i)
 
 
-# # Set up database connection
+# Set up database connection
 try:
 	db = argv[1]
 except IndexError:
