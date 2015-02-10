@@ -67,7 +67,7 @@ def load_file(file_name, db_engine):
 
 	from_file = Table.from_csv(f, name = file_name.rstrip('.csv'), encoding = 'utf-8') # Here be some overhead
 
-	print '   Preparing table for SQL ({})...'.format(datetime.now() - start_time)
+	print '   Making SQLAlchemy Table object ({})...'.format(datetime.now() - start_time)
 
 	sql_table = sql.make_table(from_file)
 
