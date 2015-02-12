@@ -33,13 +33,13 @@ def get_files(soup, url_scheme, url_pattern):
 
 		else:
 
-			print '   downloading: {}...'.format(file_name)
+			print '   downloading: {} ({})...'.format(file_name, datetime.now() - start_time)
 
 			response = requests.get(url_scheme + link['href'])
 
 			with codecs.open('data/' + file_name, 'w', 'utf-8') as out_file:
 
-				out_file.write(response.content.decode('latin-1'))
+				out_file.write(response.content.strip().decode('latin-1'))
 
 		files.append(file_name)
 
@@ -78,7 +78,7 @@ def load_file(file_name, db_engine):
 
 	print '   Loading {} ({})...'.format(file_name, datetime.now() - start_time)
 
-	copy_from_sql = '''COPY {table_name} 
+	copy_from_sql = '''COPY "{table_name}"
 					FROM '{file_w_path}'
 					DELIMITER '{delimiter}'
 					QUOTE '{quote_character}'
