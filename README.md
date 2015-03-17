@@ -11,11 +11,11 @@ First, you need to set up a local PostgreSQL database:
 	# CREATE DATABASE [db_name];
 	# \q
 
-Now run the [load data script](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py):
+Now run the [load data](https://github.com/gordonje/IRS_Migration/blob/master/load_data.py) script:
 
 	$ python load_data.py [db_name] [db_user] [db_password]
 
-If you forget to pass the database parameters when you initialize the script, you'll still be prompted to provide them.
+If you forget to pass the database parameters when you initialize the script, you'll still be prompted to provide them. Also note that the database user you specify will also need read permissions on the data downloaded by the script. So if you are logging into the database with the "postgres" role, this might be a problem. You could either manual set the permissions on the file to allow "Everyone" to read them or, better yet, create a new database role for your user account (Note that this might require you to run 'createdb' from the terminal if your PostgreSQL installation process did not set up a default database for the user OS user account).
 
 A little more about how load_data.py works:
 
