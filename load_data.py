@@ -15,7 +15,7 @@ start_time = datetime.now()
 print 'Started at ' + str(start_time)
 
 
-def get_files(soup, url_scheme, url_pattern):
+def download_files(soup, url_scheme, url_pattern):
 	# Pass soup object containing links, plus url scheme of site and regex pattern for url links
 	# Searches for file links, downloads files and returns a list of file names
 
@@ -101,11 +101,10 @@ def load_file(file_name, db_engine):
 		t.commit()
 	except:
 		t.rollback()
-		print copy_from_sql
+		print copy_from_sql.replace('\t', '')
 		print "Failed to commit."
 
 	conn.close()
-
 
 
 url_scheme = 'http://www.irs.gov/'
@@ -118,7 +117,7 @@ response = requests.get(url_scheme + 'uac/SOI-Tax-Stats-State-to-State-Migration
 
 soup = BeautifulSoup(response.content)
 
-for i in get_files(soup, url_scheme, re.compile(r'/file_source/pub/irs-soi/state.+\.+csv')):
+for i in download_files(soup, url_scheme, re.compile(r'/file_source/pub/irs-soi/state.+\.+csv')):
 	in_files.append(i)
 
 # get county-level data
@@ -126,7 +125,7 @@ response = requests.get(url_scheme + 'uac/SOI-Tax-Stats-County-to-County-Migrati
 
 soup = BeautifulSoup(response.content)
 
-for i in get_files(soup, url_scheme, re.compile(r'/file_source/pub/irs-soi/county.+\.+csv')):
+for i in download_files(soup, url_scheme, re.compile(r'/file_source/pub/irs-soi/county.+\.+csv')):
 	in_files.append(i)
 
 
